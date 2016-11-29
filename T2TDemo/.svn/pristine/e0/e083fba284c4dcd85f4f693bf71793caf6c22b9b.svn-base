@@ -1,0 +1,137 @@
+//
+//  LWLBottomView.m
+//  T2TDemo
+//
+//  Created by luoluo on 16/7/22.
+//  Copyright © 2016年 长沙二三三网络科技有限公司. All rights reserved.
+//
+
+#import "LWLBottomView.h"
+#define k_Width (kScreenWidth-110)/self.bottomArray.count
+@implementation LWLBottomView
+- (instancetype)initWithFrame:(CGRect)frame{
+    self = [super initWithFrame:frame];
+    if (self) {
+        self.backgroundColor = [UIColor whiteColor];
+        UIButton *buyNowButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        buyNowButton.frame = CGRectMake(kScreenWidth-110, 0, 110,self.frame.size.height);
+        buyNowButton.backgroundColor = RGB(225, 59, 41, 1);
+        [buyNowButton setTitle:@"立即购买" forState:UIControlStateNormal];
+        [buyNowButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        buyNowButton.tag = 200;
+        buyNowButton.titleLabel.font = [UIFont systemFontOfSize:16];
+        [buyNowButton addTarget:self action:@selector(customerAction:) forControlEvents:UIControlEventTouchUpInside];
+        [self addSubview:buyNowButton];
+    }
+    return self;
+}
+//刷新控件
+- (void)refreshSubViewsTitleAndImages:(NSArray*)bottomArr pageIndex:(NSInteger)buttonIndex{
+    NSArray *subViews = self.subviews;
+    [subViews enumerateObjectsUsingBlock:^(UIView  *_Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if (obj.tag!=200) {
+            [obj removeFromSuperview];
+        }
+    }];
+
+    if (bottomArr.count>0) {
+        self.bottomArray = bottomArr;
+    }
+    self.buttonIndex = buttonIndex;
+    [self.bottomArray enumerateObjectsUsingBlock:^(NSDictionary  *_Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        UIButton *customerButton = [self  addButtonTitle:obj[@"title"] imageName:obj[@"imageName"] index:idx];
+        customerButton.tag = 100+idx;
+        [customerButton addTarget:self action:@selector(clickAction:) forControlEvents:UIControlEventTouchUpInside];
+    }];
+    //加线
+    [self addLine];
+}
+//创建底部按钮
+- (UIButton*)addButtonTitle:(NSString*)title imageName:(NSString*)imgName index:(NSInteger)index{
+    UIButton *customerButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [customerButton setImage:[UIImage imageNamed:imgName] forState:UIControlStateNormal];
+    [customerButton setTitle:title forState:UIControlStateNormal];
+    [customerButton setTitleColor:RGB(51, 51, 51, 1) forState:UIControlStateNormal];
+    customerButton.titleLabel.font = [UIFont systemFontOfSize:10];
+    [self addSubview:customerButton];
+    customerButton.frame = CGRectMake(k_Width*index, 0 , k_Width,self.frame.size.height);
+    
+    NSDictionary *attribute = @{NSFontAttributeName: [UIFont systemFontOfSize:10]};
+    UIImage *image = [UIImage imageNamed:imgName];
+    NSString *str = title;
+    CGSize size1 = [str boundingRectWithSize:CGSizeMake(k_Width, 0) options: NSStringDrawingTruncatesLastVisibleLine | NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading attributes:attribute context:nil].size;
+    customerButton.titleEdgeInsets =UIEdgeInsetsMake(0.8*image.size.height, -0.5*image.size.width, -0.5*image.size.height, 0.5*image.size.width);
+    customerButton.imageEdgeInsets =UIEdgeInsetsMake(-0.5*size1.height, 0.5*size1.width, 0.5*size1.height, -0.5*size1.width);
+    return customerButton;
+}
+//加线
+- (void)addLine{
+    UIColor *lineColor = RGB(219, 219, 219, 1);
+    UIView *lineView1 = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, 1)];
+    lineView1.backgroundColor = lineColor;
+    [self addSubview:lineView1];
+    [self.bottomArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        UIView *lineView2 = [[UIView alloc]initWithFrame:CGRectMake(k_Width*(idx+1), 0, 1, self.frame.size.height)];
+        lineView2.backgroundColor = lineColor;
+        [self addSubview:lineView2];
+    }];
+}
+- (void)clickAction:(UIButton*)btn{
+    switch (btn.tag) {
+        case 200://立即购买
+            [self buyNowAction:btn];
+            break;
+        case 100:
+            [self customerAction:btn];
+            break;
+        case 101:
+            [self clickSecondBtnAction:btn];
+            break;
+        case 102:
+            [self addShopingCart:btn];
+            break;
+        default:
+            break;
+    }
+
+//    [self.delegate clickButton:btn];
+}
+//加入购物车
+- (void)addShopingCart:(UIButton*)btn{
+    
+}
+//收藏
+- (void)collectAction:(UIButton*)btn{
+    
+}
+//客服
+- (void)customerAction:(UIButton*)btn{
+    
+}
+//试听
+- (void)tryToLearnAction:(UIButton*)btn{
+    
+    
+}
+//立即购买
+- (void)buyNowAction:(UIButton*)btn{
+    
+}
+//点击底部第二个按钮
+- (void)clickSecondBtnAction:(UIButton*)btn{
+    if (self.buttonIndex == 1) {//试听页面
+        [self tryToLearnAction:btn];
+    }else{
+        [self collectAction:btn];
+    }
+    
+}
+/*
+// Only override drawRect: if you perform custom drawing.
+// An empty implementation adversely affects performance during animation.
+- (void)drawRect:(CGRect)rect {
+    // Drawing code
+}
+*/
+
+@end

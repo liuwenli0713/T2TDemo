@@ -1,0 +1,14 @@
+//
+//  EvaluateTableView.h
+//  T2TDemo
+//
+//  Created by luoluo on 16/7/21.
+//  Copyright © 2016年 长沙二三三网络科技有限公司. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+#import "CourseHeaderView.h"
+#import "TagsHedarView.h"
+@interface EvaluateTableView : UITableView<UITableViewDataSource,UITableViewDelegate,HeaderViewHeightChangeDelegate/*,TagsHeaderViewHeightChangeDelegate*/>
+
+@end

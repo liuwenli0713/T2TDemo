@@ -1,0 +1,98 @@
+//
+//  EvaluateTableView.m
+//  T2TDemo
+//
+//  Created by luoluo on 16/7/21.
+//  Copyright © 2016年 长沙二三三网络科技有限公司. All rights reserved.
+//
+
+#import "EvaluateTableView.h"
+#import "EvaluateCell.h"
+#import "TagsHedarView.h"
+#define k_Width ((kScreenWidth-110)/3)
+@implementation EvaluateTableView{
+    UIView *_bottomView;
+    NSString *_identify;
+    CourseHeaderView *_courseHeaderView;
+    TagsHedarView *_tagsHeaderView;
+}
+- (instancetype)initWithFrame:(CGRect)frame style:(UITableViewStyle)style{
+    self = [super initWithFrame:frame style:style];
+    if (self) {
+        [self initSubViews];
+    }
+    return self;
+}
+- (instancetype)initWithCoder:(NSCoder *)aDecoder{
+    self = [super initWithCoder:aDecoder];
+    if (self) {
+        [self initSubViews];
+    }
+    return self;
+}
+- (void)initSubViews{
+    self.delegate = self;
+    self.dataSource = self;
+    _identify = @"evaluateCell";
+    [self registerNib:[UINib nibWithNibName:@"EvaluateCell" bundle:nil] forCellReuseIdentifier:_identify];
+    self.separatorInset = UIEdgeInsetsMake(0, 65, 0, 0);
+    [self createTableHeaderView];
+}
+- (void)createTableHeaderView{
+    _courseHeaderView = [[CourseHeaderView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, 300)];
+    _courseHeaderView.backgroundColor = [UIColor whiteColor];
+    _courseHeaderView.delegate = self;
+    _courseHeaderView.tagsArray = @[
+                                    @[@"全部",@"钢琴",@"吉他",@"电吉他",@"小提琴",@"架子鼓",@"口琴",@"贝斯",@"卡祖笛",@"古筝",@"翻弹",@"音乐",@"指弹",@"千本樱",@"民乐",@"初音MIKU",@"ANIMENZ",@"PENBEAT",@"木吉他",@"二胡",@"COVER",@"交响",@"权御天下",@"普通DISCO",@"OP",@"ILEM",@"原创",@"作业用BGM",@"串烧",@"东方",@"合奏",@"燃向",@"触手",@"试奏",@"ACG指弹",@"武士桑",@"触手猴",@"BGM",@"LAUNCHPAD"],
+                                    @[@"数学",@"物理",@"英语",@"化学",@"地理",@"历史",@"生物"]
+                                    ];
+    self.tableHeaderView = _courseHeaderView;
+//    _tagsHeaderView = [[TagsHedarView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, 300)];
+//    _courseHeaderView.backgroundColor = [UIColor whiteColor];
+////    _tagsHeaderView.delegate = self;
+//    _tagsHeaderView.tagsArray = @[
+//                          @[@"全部",@"钢琴",@"吉他",@"电吉他",@"小提琴",@"架子鼓",@"口琴",@"贝斯",@"卡祖笛",@"古筝",@"翻弹",@"音乐",@"指弹",@"千本樱",@"民乐",@"初音MIKU",@"ANIMENZ",@"PENBEAT",@"木吉他",@"二胡",@"COVER",@"交响",@"权御天下",@"普通DISCO",@"OP",@"ILEM",@"原创",@"作业用BGM",@"串烧",@"东方",@"合奏",@"燃向",@"触手",@"试奏",@"ACG指弹",@"武士桑",@"触手猴",@"BGM",@"LAUNCHPAD"],
+//                          @[@"数学",@"物理",@"英语",@"化学",@"地理",@"历史",@"生物"]
+//                          ];
+//    self.tableHeaderView = _tagsHeaderView;
+    
+}
+#pragma mark UITableViewDataSource
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+    return 1;
+}
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    return 10;
+}
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    EvaluateCell *cell = [tableView dequeueReusableCellWithIdentifier:_identify forIndexPath:indexPath];
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    return cell;
+}
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    NSString *labelString = @"jksdlfsfslfkjslflskfklsjflsjfklsjflsjflsjfksljdkldjfsddddddddddddddddddddddddjfsoajfl江水泡饭就说了句11江水泡饭就说了句11江水泡饭就说了句11江水泡饭就说了句11江水泡饭就说了句11";
+    NSDictionary *attribute = @{NSFontAttributeName: [UIFont systemFontOfSize:14]};
+    CGFloat width = kScreenWidth - 75;
+    CGSize size1 = [labelString boundingRectWithSize:CGSizeMake(width, 0) options: NSStringDrawingTruncatesLastVisibleLine | NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading attributes:attribute context:nil].size;
+//    CGSize labelSize =  [labelString sizeWithAttributes:attribute];
+    return size1.height+52+15;
+}
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+    return 0.1;
+}
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+    return 0.1;
+}
+#pragma mark HeaderViewHeightChangeDelegate
+- (void)headerViewHeightChange:(CGFloat)height{
+    NSLog(@"%f",height);
+//    _courseHeaderView.height = height;
+////    [self beginUpdates];
+//    NSLog(@"%f",height);
+////    [self setTableHeaderView:_courseHeaderView];
+    self.tableHeaderView = _courseHeaderView;
+    
+//    [self endUpdates];
+    
+}
+@end

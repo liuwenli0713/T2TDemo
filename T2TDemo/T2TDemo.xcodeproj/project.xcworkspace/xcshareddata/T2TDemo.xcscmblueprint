@@ -1,0 +1,35 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "1180326a-c735-3249-b9c4-2a38f2ae1eef++8239",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+    "1180326a-c735-3249-b9c4-2a38f2ae1eef++8239" : {
+
+    },
+    "a24d6a55-e0ee-5646-bbdc-b788cf763885++6753" : {
+
+    }
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "1180326a-c735-3249-b9c4-2a38f2ae1eef++8239" : 0,
+    "a24d6a55-e0ee-5646-bbdc-b788cf763885++6753" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "ED2BF376-77EF-4092-A41A-0099CFB9E305",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "1180326a-c735-3249-b9c4-2a38f2ae1eef++8239" : "T2TDemo\/",
+    "a24d6a55-e0ee-5646-bbdc-b788cf763885++6753" : "T2TDemo\/T2TDemo\/Course\/MJRefresh\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "T2TDemo",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "T2TDemo.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/192.168.1.189:8443\/svn\/iOSProject",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Subversion",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "1180326a-c735-3249-b9c4-2a38f2ae1eef++8239"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "http:\/\/192.168.0.168:8090\/svn\/iOS_Client",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Subversion",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "a24d6a55-e0ee-5646-bbdc-b788cf763885++6753"
+    }
+  ]
+}

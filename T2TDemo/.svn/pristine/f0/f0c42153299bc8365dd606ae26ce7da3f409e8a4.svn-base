@@ -1,0 +1,20 @@
+//
+//  LWLBottomView.h
+//  T2TDemo
+//
+//  Created by luoluo on 16/7/22.
+//  Copyright © 2016年 长沙二三三网络科技有限公司. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+
+
+@interface LWLBottomView : UIView
+@property(nonatomic,strong)NSArray *bottomArray;
+@property(nonatomic,assign)NSInteger pageIndex;
+
+- (instancetype)initWithFrame:(CGRect)frame bottomArray:(NSArray*)bottomArray;
+//- (void)refreshSubViewsTitleAndImages:(NSArray*)bottomArr  pageIndex:(NSInteger)pageIndex;
+- (void)updateTitle:(NSString*)title imageName:(NSString*)imageName buttonIndex:(NSInteger)buttonIndex pageIndex:(NSInteger)pageIndex;
+
+@end

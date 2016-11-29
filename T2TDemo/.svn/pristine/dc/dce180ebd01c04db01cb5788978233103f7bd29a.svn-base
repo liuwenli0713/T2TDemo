@@ -1,0 +1,204 @@
+//
+//  CourseHeaderView.m
+//  T2TDemo
+//
+//  Created by luoluo on 16/7/25.
+//  Copyright © 2016年 长沙二三三网络科技有限公司. All rights reserved.
+//
+
+#import "CourseHeaderView.h"
+#import "SKTagView.h"
+#import "UIColor+Hex.h"
+@implementation CourseHeaderView
+- (void)setTagsArray:(NSArray *)tagsArray{
+    _tagsArray = tagsArray;
+    
+    //Add Tags
+    [@[@"Python", @"Javascript", @"Python", @"Swift", @"Go", @"Objective-C", @"C", @"PHP"] enumerateObjectsUsingBlock: ^(NSString *text, NSUInteger idx, BOOL *stop) {
+        SKTag *tag = [self createTag:text];
+        [self.tagView1 addTag:tag];
+    }];
+    //新增按钮
+    SKTag *tag = [SKTag tagWithText: @"23"];
+    tag.textColor = [UIColor clearColor];
+    tag.fontSize = 12;
+    //tag.font = [UIFont fontWithName:@"Courier" size:15];
+    //tag.enable = NO;
+    tag.padding = UIEdgeInsetsMake(7.5, 12.5, 7.5, 12.5);
+    //    tag.bgColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"icon_jia@2x.png"]];
+    tag.bgImg = [UIImage imageNamed:@"icon_jia@2x.png"];
+    tag.cornerRadius = 4;
+    [self.tagView1 addTag:tag];
+    [self addSubview:self.textField1];
+    [_textField1 mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.width.equalTo(@195);
+        make.height.equalTo(@29);
+        make.left.equalTo(self.mas_left).offset(65);
+        make.top.equalTo(self.tagView1.mas_bottom).offset(0);
+    }];
+    UILabel *label1 = [[UILabel alloc]initWithFrame:CGRectMake(10, 22.5, 45, 14)];
+    [self addSubview:label1];
+    label1.font = [UIFont systemFontOfSize:12];
+    label1.text = @"课件服务";
+    [label1 mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.width.equalTo(@195);
+//        make.height.equalTo(@29);
+        make.left.equalTo(self.mas_left).offset(10);
+        make.top.equalTo(self.mas_top).offset(22.5);
+    }];
+    if([self.delegate respondsToSelector:@selector(headerViewHeightChange:)]){
+        NSLog(@"%f",self.tagView1.intrinsicContentSize.height);
+        [self.delegate headerViewHeightChange:self.tagView1.intrinsicContentSize.height];
+    }
+ 
+}
+- (UITextField*)textField1{
+    if (!_textField1) {
+        _textField1 = [[UITextField alloc]init];
+//        [self addSubview:_textField1];
+       
+//        _textField1.hidden = YES;
+        _textField1.placeholder = @"请输入对课件服务的评价哦";
+        _textField1.font = [UIFont systemFontOfSize:12];
+        UIButton *rightBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        rightBtn.frame = CGRectMake(0, 0, 45, 29);
+        [rightBtn setTitle:@"确定" forState:UIControlStateNormal];
+        [rightBtn setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+        [rightBtn setBackgroundColor:[UIColor redColor]];
+        _textField1.rightView = rightBtn;
+    }
+    return _textField1;
+}
+- (SKTagView*)tagView1{
+    if (_tagView1==nil) {
+        _tagView1 = ({
+            SKTagView *view = [SKTagView new];
+            view.backgroundColor = [UIColor whiteColor];
+            view.padding = UIEdgeInsetsMake(15, 10, 7.5, 10);
+            view.interitemSpacing = 7.5;
+            view.lineSpacing = 7.5;
+            view.preferredMaxLayoutWidth = [UIScreen mainScreen].bounds.size.width-65;
+            __weak SKTagView *weakView = view;
+            view.didTapTagAtIndex = ^(NSUInteger index){
+                //            [weakView removeTagAtIndex:index];
+                if (index<weakView.subviews.count-1) {
+                    UIButton *btn = [weakView.subviews objectAtIndex:index];
+                    btn.selected = YES;
+                    btn.backgroundColor = [UIColor colorWithRed:223/255.0f green:61/255.0f blue:49/255.0f alpha:1];
+                }else{
+                    [self onInsert:nil];
+                    [self.delegate headerViewHeightChange:self.tagView1.intrinsicContentSize.height];
+                }
+                
+            };
+            view;
+        });
+        [self addSubview:_tagView1];
+        __weak typeof(self) weakSelf = self;
+        [_tagView1 mas_makeConstraints: ^(MASConstraintMaker *make) {
+//            UIView *superView = self;
+//            make.top.equalTo(superView.mas_top).offset(0);
+//            make.leading.equalTo(superView.mas_leading).with.offset(0);
+//            make.trailing.equalTo(superView.mas_trailing);
+            make.top.equalTo(weakSelf.mas_top);
+            make.left.equalTo(weakSelf.mas_left).offset(55);
+            make.right.equalTo(weakSelf.mas_right);
+        }];
+        
+    }
+    return _tagView1;
+}
+- (IBAction)onInsert: (id)sender {
+    SKTag *tag = [self createTag:@"新增"];
+    [self.tagView1 insertTag: tag atIndex: self.tagView1.subviews.count-1];
+}
+- (SKTag*)createTag:(NSString*)text{
+    SKTag *tag = [SKTag tagWithText: text];
+    tag.textColor = [UIColor colorWithHexString: @"#333333"];
+    tag.selectTextColor = [UIColor whiteColor];
+    tag.fontSize = 12;
+    
+    //tag.font = [UIFont fontWithName:@"Courier" size:15];
+    //tag.enable = NO;
+    tag.padding = UIEdgeInsetsMake(7.5, 12.5, 7.5, 12.5);
+    tag.bgColor = [UIColor colorWithHexString: @"#f5f5f5"];
+    
+    //        tag.bgColor = [UIColor colorWithRed:245/255.0f green:245/255.0f blue:245/255.0f alpha:1];
+    
+    tag.cornerRadius = 4;
+    return tag;
+}
+
+//- (void)setTagsArray:(NSArray *)tagsArray{
+//    _tagsArray = tagsArray;
+//    _tagsFrames = [NSMutableArray array];
+//    _colorArray = @[RGB(241, 241, 241,1),RGB(124, 124, 124,1)];
+//    [_tagsArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+//        TagsFrame *frame = [[TagsFrame alloc] init];
+//        
+//        if (idx == 0) {
+//            _tagsView1 = [[TagsView alloc]initWithFrame:CGRectMake(65-7.5, 0, kScreenWidth-65+7.5, 100)];
+//            [self addSubview:_tagsView1];
+//            frame.tagsMinPadding = 5;
+//            frame.tagsMargin = 7.5;
+//            frame.tagsLineSpacing = 7.5;
+//        }else if (idx == 1){
+//            _tagsView2 = [[TagsView alloc]initWithFrame:CGRectMake(65, 100, kScreenWidth-65, 100)];
+//            [self addSubview:_tagsView2];
+//            frame.tagsMinPadding = 15;
+//            frame.tagsMargin = 40;
+//            frame.tagsLineSpacing = 20;
+//        }
+//        
+//        frame.tagsArray = obj;
+//        [_tagsFrames addObject:frame];
+//    }];
+//    
+//    TagsFrame *tagsFrame = _tagsFrames[0];
+//    TagsFrame *tagsFrame2 = _tagsFrames[1];
+//    CGFloat height1 = tagsFrame.tagsHeight;
+//    CGFloat height2 = tagsFrame2.tagsHeight;;
+//    _tagsView1.height = height1;
+//    _tagsView2.height = height2;
+//    _tagsView2.top = height1;
+//    self.height = height1+height2;
+//    _tagsView1.tagsFrame = tagsFrame;
+//    _tagsView2.tagsFrame = tagsFrame2;
+//    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+//    [button addTarget:self action:@selector(clickAction:) forControlEvents:UIControlEventTouchUpInside];
+////    button.frame = CGRectMake(kScreenWidth-20-15,CGRectGetMaxY(self.frame)-11-10, 20, 11);
+//    [button setImage:[UIImage imageNamed:@"icon_sq"] forState:UIControlStateNormal];
+//    [button setImage:[UIImage imageNamed:@"icon_zk"] forState:UIControlStateSelected];
+//    button.selected = YES;
+//    [self addSubview:button];
+//    [button mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.width.equalTo(@20);
+//        make.height.equalTo(@11);
+//        make.right.equalTo(self.mas_right).offset(-15);
+//        make.bottom.equalTo(self.mas_bottom).offset(-10);
+//    }];
+//    self.layer.masksToBounds = YES;
+//    
+//}
+//- (void)clickAction:(UIButton*)btn{
+//    if (btn.selected) {
+//        btn.selected = NO;
+//        if ([self.delegate respondsToSelector:@selector(headerViewHeightChange:)]) {
+//            [self.delegate headerViewHeightChange:50];
+//        }
+//    }else{
+//        btn.selected = YES;
+//        if ([self.delegate respondsToSelector:@selector(headerViewHeightChange:)]) {
+//            [self.delegate headerViewHeightChange:CGRectGetMaxY(_tagsView2.frame)];
+//        }
+//    }
+//}
+/*
+// Only override drawRect: if you perform custom drawing.
+// An empty implementation adversely affects performance during animation.
+- (void)drawRect:(CGRect)rect {
+    // Drawing code
+}
+*/
+
+@end

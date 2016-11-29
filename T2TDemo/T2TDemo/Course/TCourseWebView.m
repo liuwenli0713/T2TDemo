@@ -1,0 +1,130 @@
+//
+//  CourseDetailViewController.m
+//  T2TDemo
+//
+//  Created by luoluo on 16/7/21.
+//  Copyright © 2016年 长沙二三三网络科技有限公司. All rights reserved.
+//
+
+#import "TCourseWebView.h"
+#define PATH [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0]//沙盒Document路径
+@implementation TCourseWebView
+
+- (instancetype)initWithFrame:(CGRect)frame{
+    self = [super initWithFrame:frame];
+    if(self){
+        //加载html
+        [self loadWebView];
+    
+    }
+    return self;
+}
+- (instancetype)initWithCoder:(NSCoder *)aDecoder{
+    self = [super initWithCoder:aDecoder];
+    if(self){
+        //加载html
+        [self loadWebView];
+        
+    }
+    return self;
+
+}
+//加载html
+- (void)loadWebView{
+
+    self.delegate = self;
+    //加载本地html文件
+//    NSString *htmlPath = [PATH stringByAppendingPathComponent:@"upms-bootstrap/list.html"];
+    NSString *url = @"https://www.baidu.com";
+    NSURLRequest *request =[NSURLRequest requestWithURL:[NSURL URLWithString:url]];
+    [self loadRequest:request];
+    //禁用UIWebView拖拽时的反弹效果
+//    [(UIScrollView *)[[self subviews] objectAtIndex:0] setBounces:NO];
+    self.scalesPageToFit = YES;//自动对页面进行缩放以适应屏幕
+    //为webView背景设为透明
+//    self.backgroundColor=[UIColor clearColor];
+//    self.opaque=NO;
+    
+    
+
+}
+//网页开始加载的时候调用
+- (void )webViewDidStartLoad:(UIWebView *)webView{
+
+}
+//网页加载完成的时候调用
+- (void )webViewDidFinishLoad:(UIWebView *)webView{
+    [self clearBackgroundWithColor:[UIColor clearColor]];
+//    取消长按webView上的链接弹出actionSheet的问题
+    [webView stringByEvaluatingJavaScriptFromString:@"document.documentElement.style.webkitTouchCallout = 'none';"];
+    //显示滚动标识然后消失
+    for (id subView in [webView subviews])
+        
+    {   if ([subView respondsToSelector:@selector(flashScrollIndicators)])
+        
+    {
+        
+        [subView flashScrollIndicators];
+        
+    } 
+        
+    }
+}
+//网页加载错误的时候调用
+- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error{
+
+}
+//去掉webView的阴影，做成类似scrollView：
+
+- (void)clearBackgroundWithColor:(UIColor*)color
+{
+    
+    // 去掉webview的阴影
+    
+    self.backgroundColor = color;
+    //循环遍历子视图
+    for (UIView* subView in [self subviews])
+        
+    {
+        //判断子视图是否是UIScrollView
+        if ([subView isKindOfClass:[UIScrollView class]]) {
+            
+            for (UIView* shadowView in [subView subviews])
+                
+            {
+                
+                if ([shadowView isKindOfClass:[UIImageView class]]) {
+                    
+                    [shadowView setHidden:YES];
+                    
+                }
+                
+            }
+        }
+    }
+}
+//取消webView上的超级链接加载问题：
+-(BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
+
+{
+    /*
+     UIWebViewNavigationTypeLinkClicked，用户触击了一个链接。
+     UIWebViewNavigationTypeFormSubmitted，用户提交了一个表单。
+     UIWebViewNavigationTypeBackForward，用户触击前进或返回按钮。
+     UIWebViewNavigationTypeReload，用户触击重新加载的按钮。
+     UIWebViewNavigationTypeFormResubmitted，用户重复提交表单
+     UIWebViewNavigationTypeOther，发生其它行为。
+     */
+    if (navigationType==UIWebViewNavigationTypeLinkClicked) {
+        
+        return NO;   
+    }
+    
+    else {
+        
+        return YES;
+        
+    }
+    
+}
+@end

@@ -1,0 +1,51 @@
+//
+//  EvaluateTableView.m
+//  T2TDemo
+//
+//  Created by luoluo on 16/7/21.
+//  Copyright © 2016年 长沙二三三网络科技有限公司. All rights reserved.
+//
+
+#import "EvaluateTableView.h"
+#import "EvaluateCell.h"
+#define k_Width ((kScreenWidth-110)/3)
+@implementation EvaluateTableView{
+    UIView *_bottomView;
+    NSString *_identify;
+    
+}
+
+- (instancetype)initWithFrame:(CGRect)frame style:(UITableViewStyle)style{
+    self = [super initWithFrame:frame style:style];
+    if (self) {
+        [self initSubViews];
+    }
+    return self;
+}
+- (instancetype)initWithCoder:(NSCoder *)aDecoder{
+    self = [super initWithCoder:aDecoder];
+    if (self) {
+        [self initSubViews];
+    }
+    return self;
+}
+- (void)initSubViews{
+    self.delegate = self;
+    self.dataSource = self;
+    _identify = @"evaluateCell";
+    [self registerNib:[UINib nibWithNibName:@"EvaluateCell" bundle:nil] forCellReuseIdentifier:_identify];
+    
+    
+}
+#pragma mark UITableViewDataSource
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    return 10;
+}
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    EvaluateCell *cell = [tableView dequeueReusableCellWithIdentifier:_identify forIndexPath:indexPath];
+    return cell;
+}
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return 60;
+}
+@end

@@ -1,0 +1,183 @@
+//
+//  CourseDetailViewController.m
+//  T2TDemo
+//
+//  Created by luoluo on 16/7/21.
+//  Copyright © 2016年 长沙二三三网络科技有限公司. All rights reserved.
+//
+
+#import "CourseDetailViewController.h"
+#import "StartWebView.h"
+#import "AuditionTableView.h"
+#import "EvaluateTableView.h"
+#import "LWLBottomView.h"
+#import "LWLNavigationTopView.h"
+#import "LWLDetailScrollView.h"
+//TStudyPagesController
+@interface CourseDetailViewController ()<UIScrollViewDelegate,LWLClickNavigationBtnDelegate>
+
+@end
+
+@implementation CourseDetailViewController{
+//    UIButton *_evaluateButton;//评价按钮
+//    UIButton *_selectButton;
+//    UIView *_navigationBottomView;
+    LWLDetailScrollView *_scrollView;
+    StartWebView *_detailWebView;
+    AuditionTableView *_auditionTableView;
+    EvaluateTableView *_evaluateTableView;
+    LWLNavigationTopView *_navigationTitleView;
+    LWLBottomView *_bottomView;//底部按钮
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    [self createNavigationView];
+    [self createDetailView];
+    [self refreshBottomView];
+
+    self.automaticallyAdjustsScrollViewInsets = NO;
+    
+    // Do any additional setup after loading the view.
+}
+//创建导航栏标题视图
+- (void)createNavigationView{
+    NSArray *array = @[@"详情",@"试听",@"评论"];
+    _navigationTitleView = [[LWLNavigationTopView alloc]initWithFrame:CGRectMake(0, 0, kButtonWidth*array.count, 44) titles:array];
+    _navigationTitleView.delegate = self;
+    self.navigationItem.titleView = _navigationTitleView;
+    //    UIBarButtonItem *rightBarButtonItem = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"icon_gwc"] style:UIBarButtonItemStylePlain target:self action:@selector(shopingCartAction:)];
+    UIButton *cartButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    cartButton.frame = CGRectMake(0, 0, 34, 34);
+    [cartButton setImage:[UIImage imageNamed:@"icon_gwc@2x.png"] forState:UIControlStateNormal];
+    [cartButton addTarget:self action:@selector(shopingCartAction:) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *rightBarButtonItm = [[UIBarButtonItem alloc]initWithCustomView:cartButton];
+    self.navigationItem.rightBarButtonItem = rightBarButtonItm;
+    UILabel *numberLabel = [[UILabel alloc]initWithFrame:CGRectMake(cartButton.frame.size.width-15, 0, 15, 15)];
+//    numberLabel.center = CGPointMake(cartButton.frame.size.width, 0);
+    numberLabel.backgroundColor = RGB(225, 59, 41, 1);
+    numberLabel.textColor = [UIColor whiteColor];
+    [numberLabel.layer setMasksToBounds:YES];
+    numberLabel.text = @"1";
+    numberLabel.font = [UIFont systemFontOfSize:9];
+    [numberLabel.layer setCornerRadius:numberLabel.frame.size.width/2];
+    numberLabel.textAlignment = NSTextAlignmentCenter;
+    [cartButton addSubview:numberLabel];
+}
+- (void)refreshBottomView{
+    switch (self.pageIndex) {
+        case 0:{
+            NSArray *array = @[
+                               @{@"title":@"客服资讯",@"imageName":@"icon_kf"},
+                               @{@"title":@"添加购课",@"imageName":@"icon_gwctj"},
+                               ];
+            [self.bottomView refreshSubViewsTitleAndImages:array pageIndex:self.pageIndex];
+        }
+            break;
+        case 1:{
+            NSArray *array = @[
+                               @{@"title":@"客服",@"imageName":@"icon_kf"},
+                               @{@"title":@"试听",@"imageName":@"icon_sxx"},
+                               @{@"title":@"添加",@"imageName":@"icon_gwctj"},
+                               ];
+            [self.bottomView refreshSubViewsTitleAndImages:array pageIndex:self.pageIndex];
+        }
+            break;
+        case 2:{
+            NSArray *array = @[
+                               @{@"title":@"客服",@"imageName":@"icon_kf"},
+                               @{@"title":@"收藏",@"imageName":@"icon_sc"},
+                               @{@"title":@"添加",@"imageName":@"icon_gwctj"},
+                               ];
+            [self.bottomView refreshSubViewsTitleAndImages:array pageIndex:self.pageIndex];
+        }
+            break;
+        default:
+            break;
+    }
+
+}
+
+
+
+
+
+//创建具体详情页面
+- (void)createDetailView{
+    _scrollView = [[LWLDetailScrollView alloc]initWithFrame:CGRectMake(0, 64, kScreenWidth, kScreenHeight-64-49)];
+    [self.view addSubview:_scrollView];
+    _scrollView.delegate = self;
+    [_scrollView addSubview:self.detailWebView];
+    [_scrollView addSubview:self.auditionTableView];
+    [_scrollView addSubview:self.evaluateTableView];
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"https://www.baidu.com"]];
+    [self.detailWebView loadRequest:request];
+    
+    
+}
+//点击标题视图切换显示
+- (void)clickNavigationButtonIndex:(NSInteger)btnIndex{
+    self.pageIndex = btnIndex;
+    _scrollView.contentOffset = CGPointMake(kScreenWidth*btnIndex, 0);
+    [self refreshBottomView];
+}
+//购物车
+- (void)shopingCartAction:(UIBarButtonItem*)btnItm{
+   
+}
+//懒加载webView
+- (StartWebView*)detailWebView{
+    if (!_detailWebView) {
+        _detailWebView = [[StartWebView alloc]initWithFrame:CGRectMake(kScreenWidth*0, 0, kScreenWidth, _scrollView.frame.size.height)];
+    }
+    return _detailWebView;
+}
+- (AuditionTableView*)auditionTableView{
+    if (_auditionTableView == nil) {
+        _auditionTableView = [[AuditionTableView alloc]initWithFrame:CGRectMake(kScreenWidth*1, 0, kScreenWidth, _scrollView.frame.size.height) style:UITableViewStyleGrouped];
+    }
+    return _auditionTableView;
+}
+- (EvaluateTableView*)evaluateTableView{
+    if (_evaluateTableView == nil) {
+        _evaluateTableView = [[EvaluateTableView alloc]initWithFrame:CGRectMake(kScreenWidth*2, 0, kScreenWidth, _scrollView.frame.size.height) style:UITableViewStyleGrouped];
+    }
+    return _evaluateTableView;
+
+}
+- (LWLBottomView*)bottomView{
+    if (_bottomView == nil) {
+        _bottomView = [[LWLBottomView alloc]initWithFrame:CGRectMake(0, kScreenHeight-49, kScreenWidth, 49)];
+        [self.view addSubview:self.bottomView];
+    }
+    return _bottomView;
+}
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+#pragma mark UIScrollView代理方法
+-(void)scrollViewDidScroll:(UIScrollView *)scrollView{
+    CGFloat pageWidth = self.view.frame.size.width;
+    int page = floor((scrollView.contentOffset.x - pageWidth / 2) / pageWidth) + 1;
+    UIButton *button = (UIButton*)[_navigationTitleView viewWithTag:page+100];
+    if (_navigationTitleView.selectButton!=button) {
+        [_navigationTitleView selectItemAtIndex:page];
+        self.pageIndex = page;
+        [self refreshBottomView];
+    }   
+}
+#pragma mark LWLClickBottomBtnDelegate
+
+/*
+#pragma mark - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+}
+*/
+
+@end

@@ -1,0 +1,207 @@
+//
+//  LWLBottomView.m
+//  T2TDemo
+//
+//  Created by luoluo on 16/7/22.
+//  Copyright © 2016年 长沙二三三网络科技有限公司. All rights reserved.
+//
+
+#import "TCourseBottomView.h"
+
+#define k_Width (kScreenWidth-110)/self.bottomArray.count
+#define kLineColor RGB(219, 219, 219, 1)
+@implementation TCourseBottomView
+- (instancetype)initWithFrame:(CGRect)frame bottomArray:(NSArray*)bottomArray{
+    self = [super initWithFrame:frame];
+    if (self) {
+        [self initSubViewsWithBottomArray:bottomArray];
+    }
+    return self;
+}
+- (void)initSubViewsWithBottomArray:(NSArray*)bottomArray{
+    self.backgroundColor = [UIColor whiteColor];
+    UIButton *buyNowButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    buyNowButton.frame = CGRectMake(kScreenWidth-110, 0, 110,self.frame.size.height);
+    buyNowButton.backgroundColor = RGB(225, 59, 41, 1);
+    [buyNowButton setTitle:@"立即购买" forState:UIControlStateNormal];
+    [buyNowButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    buyNowButton.tag = 200;
+    buyNowButton.titleLabel.font = [UIFont systemFontOfSize:16];
+    [buyNowButton addTarget:self action:@selector(customerAction:) forControlEvents:UIControlEventTouchUpInside];
+    [self addSubview:buyNowButton];
+    //加线
+    UIView *lineView1 = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, 1)];
+    lineView1.backgroundColor = kLineColor;
+    [self addSubview:lineView1];
+    if (bottomArray.count>0) {
+        self.bottomArray = bottomArray;
+    }
+    for (int i = 0; i<self.bottomArray.count; i++) {
+        NSDictionary *obj = self.bottomArray[i];
+        UIButton *customerButton = [self createButtonToIndex:i];
+        [customerButton addTarget:self action:@selector(clickAction:) forControlEvents:UIControlEventTouchUpInside];
+        [self button:customerButton Title:obj[@"title"] imageName:obj[@"imageName"] index:self.pageIndex isChange:YES];
+        [self addLineToButton:customerButton];
+    }
+    
+    
+}
+
+
+//- (NSInteger)titlesCount{
+//    if ([self.dateSource respondsToSelector:@selector(numbersOfTitlesInBottomView:pageIndex:)]) {
+//        return [self.dateSource numbersOfTitlesInBottomView:self pageIndex:_pageIndex];
+//    }
+//    return 3;
+//}
+//- (NSInteger)pageIndex{
+//    if ([self.delegate respondsToSelector:@selector(numbersOfTitlesInBottomView:pageIndex:)]) {
+//        return [self.dateSource numbersOfTitlesInBottomView:self pageIndex:_pageIndex];
+//    }
+//    return 3;
+//}
+//刷新控件
+//- (void)refreshSubViewsTitleAndImages:(NSArray*)bottomArr  pageIndex:(NSInteger)pageIndex{
+//    if (bottomArr.count>0) {
+//        self.bottomArray = bottomArr;
+//    }
+//    self.pageIndex = pageIndex;
+//    //    UIButton *btn1 = [self viewWithTag:100];
+//    UIButton *btn2 = [self viewWithTag:101];
+//    //    UIButton *btn3 = [self viewWithTag:102];
+//    BOOL isChange;
+//    if (pageIndex == 0) {
+//        isChange = NO;
+//    }else{
+//        isChange = YES;
+//    }
+//    if (pageIndex == 0) {
+//        btn2.hidden = YES;
+//        
+//    }else if(pageIndex == 1){
+//        btn2.hidden = NO;
+//    }else if(pageIndex == 2){
+//        btn2.hidden = NO;
+//    }
+//    [self resetFrameChange:isChange];
+//}
+- (void)updateTitle:(NSString*)title imageName:(NSString*)imageName buttonIndex:(NSInteger)buttonIndex pageIndex:(NSInteger)pageIndex{
+    self.pageIndex = pageIndex;
+    UIButton *btn2 = [self viewWithTag:100+buttonIndex];
+    [btn2 setImage:[UIImage imageNamed:imageName] forState:UIControlStateNormal];
+    [btn2 setTitle:title forState:UIControlStateNormal];
+
+}
+- (void)resetFrameChange:(BOOL)isChange{
+    [self.bottomArray enumerateObjectsUsingBlock:^(NSDictionary  *_Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        UIButton *btn;
+        if(self.pageIndex == 0&&idx == 1){
+            btn = [self viewWithTag:100+idx+1];
+        }else{
+            btn = [self viewWithTag:100+idx];
+        }
+        btn.left = k_Width*idx;
+        btn.width = k_Width;
+        [self button:btn Title:obj[@"title"] imageName:obj[@"imageName"] index:self.pageIndex isChange:isChange];
+    }];
+}
+//创建底部按钮
+- (UIButton*)createButtonToIndex:(NSInteger)index{
+    UIButton *customerButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [customerButton setTitleColor:RGB(51, 51, 51, 1) forState:UIControlStateNormal];
+    customerButton.titleLabel.font = [UIFont systemFontOfSize:10];
+    customerButton.frame = CGRectMake((kScreenWidth-110)/3*index, 0 , (kScreenWidth-110)/3,self.frame.size.height);
+    customerButton.tag = 100+index;
+    [self addSubview:customerButton];
+    return customerButton;
+}
+//布局
+- (void)button:(UIButton*)customerButton Title:(NSString*)title imageName:(NSString*)imgName index:(NSInteger)index isChange:(BOOL)isChange{
+    [customerButton setImage:[UIImage imageNamed:imgName] forState:UIControlStateNormal];
+    [customerButton setTitle:title forState:UIControlStateNormal];
+    if (isChange) {
+        NSDictionary *attribute = @{NSFontAttributeName: [UIFont systemFontOfSize:10]};
+        UIImage *image = [UIImage imageNamed:imgName];
+        NSString *str = title;
+        CGSize size1 = [str boundingRectWithSize:CGSizeMake(k_Width, 0) options: NSStringDrawingTruncatesLastVisibleLine | NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading attributes:attribute context:nil].size;
+        customerButton.titleEdgeInsets =UIEdgeInsetsMake(0.8*image.size.height, -0.5*image.size.width, -0.8*image.size.height, 0.5*image.size.width);
+        customerButton.imageEdgeInsets =UIEdgeInsetsMake(-0.5*size1.height, 0.5*size1.width, 0.5*size1.height, -0.5*size1.width);
+    }else{
+        customerButton.titleEdgeInsets = UIEdgeInsetsZero;
+        customerButton.imageEdgeInsets = UIEdgeInsetsZero;
+    }
+}
+//加线
+- (void)addLineToButton:(UIButton*)btn{
+    UIView *lineView2 = [[UIView alloc]init];
+    lineView2.backgroundColor = kLineColor;
+    [btn addSubview:lineView2];
+    [lineView2 mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.width.equalTo(@1);
+        make.height.equalTo([NSNumber numberWithFloat:btn.height]);
+        make.right.equalTo(btn.mas_right).with.offset(0);
+        make.top.equalTo(btn.mas_top).with.offset(0);
+    }];
+    
+}
+- (void)clickAction:(UIButton*)btn{
+    switch (btn.tag) {
+        case 200://立即购买
+            [self buyNowAction:btn];
+            break;
+        case 100:
+            [self customerAction:btn];
+            break;
+        case 101:
+            [self clickSecondBtnAction:btn];
+            break;
+        case 102:
+            [self addShopingCart:btn];
+            break;
+        default:
+            break;
+    }
+    
+    //    [self.delegate clickButton:btn];
+}
+//加入购物车
+- (void)addShopingCart:(UIButton*)btn{
+    
+}
+//收藏
+- (void)collectAction:(UIButton*)btn{
+    
+}
+//客服
+- (void)customerAction:(UIButton*)btn{
+    
+}
+//试听
+- (void)tryToLearnAction:(UIButton*)btn{
+    
+    
+}
+//立即购买
+- (void)buyNowAction:(UIButton*)btn{
+    
+}
+//点击底部第二个按钮
+- (void)clickSecondBtnAction:(UIButton*)btn{
+    if(self.pageIndex == 0){
+        [self collectAction:btn];
+    }else if(self.pageIndex == 1) {//试听页面
+        [self tryToLearnAction:btn];
+    }else if(self.pageIndex == 2){
+        [self collectAction:btn];
+    }
+    
+}
+/*
+ // Only override drawRect: if you perform custom drawing.
+ // An empty implementation adversely affects performance during animation.
+ - (void)drawRect:(CGRect)rect {
+ // Drawing code
+ }
+ */
+
+@end
